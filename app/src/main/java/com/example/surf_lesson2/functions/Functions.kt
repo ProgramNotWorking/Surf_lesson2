@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.net.Uri
 
+// Функция для получения сообщения из Content Provider
 @SuppressLint("Range")
 fun receiveDataFromSecretKeyContentProvider(
     resolver: ContentResolver

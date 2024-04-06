@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    private var secretKeyMessage: String? = null
+    private var contentProviderMessage: String? = null
     private var broadcastMessage: String? = null
 
-    fun getSecretKeyMessage(): String = secretKeyMessage ?: "Nothing"
+    fun getSecretKeyMessage(): String = contentProviderMessage ?: "Nothing"
 
     fun setSecretKeyMessage(value: String) {
-        secretKeyMessage = value
+        contentProviderMessage = value
     }
 
     fun getBroadcastMessage(): String = broadcastMessage ?: "Nothing"

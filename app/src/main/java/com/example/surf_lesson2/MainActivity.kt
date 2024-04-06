@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityMainBinding
-    private val surfBroadcastReceiver = SurfBroadcastReceiver()
+    private lateinit var surfBroadcastReceiver: SurfBroadcastReceiver
     private lateinit var viewModel: MainViewModel
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -35,8 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        viewModel = MainViewModel()
-
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -45,19 +42,25 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        viewModel = MainViewModel()
+
         val receivedSecretKeyFromContentProvider = receiveDataFromSecretKeyContentProvider(
             contentResolver
         )
+
+        surfBroadcastReceiver = SurfBroadcastReceiver { value ->
+            viewModel.setBroadcastMessage(value)
+        }
 
         val filter = IntentFilter("ru.shalkoff.vsu_lesson2_2024.SURF_ACTION")
         registerReceiver(surfBroadcastReceiver, filter, RECEIVER_EXPORTED)
 
         binding.apply {
 
-            // Кнопка для получения message из content provider
+            // Кнопка для отображения сообщения из Content Provider
             receiveSecretKeyButton.setOnClickListener {
                 receivedSecretKeyFromContentProvider?.let {
-                    viewModel.setSecretKeyMessage(receivedSecretKeyFromContentProvider)
+                    viewModel.setSecretKeyMessage(it)
                 }
                 Toast.makeText(
                     this@MainActivity,
@@ -66,11 +69,8 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
 
-            // Кнопка для получения сообщения из broadcast'a
+            // Кнопка для отображения сообщения из Broadcast
             receiveBroadcastMessageButton.setOnClickListener {
-                surfBroadcastReceiver.getMessage()?.let {
-                    viewModel.setBroadcastMessage(surfBroadcastReceiver.getMessage())
-                }
                 Toast.makeText(
                     this@MainActivity,
                     viewModel.getBroadcastMessage(),
@@ -82,25 +82,22 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
         outState.putString(CONTENT_PROVIDER_KEY, viewModel.getSecretKeyMessage())
         outState.putString(BROADCAST_KEY, viewModel.getBroadcastMessage())
     }
 
     override fun onRestoreInstanceState(
-        savedInstanceState: Bundle?,
-        persistentState: PersistableBundle?
+        savedInstanceState: Bundle
     ) {
-        super.onRestoreInstanceState(savedInstanceState, persistentState)
-        if (savedInstanceState != null) {
-            viewModel.setSecretKeyMessage(
-                savedInstanceState.getString(CONTENT_PROVIDER_KEY).toString()
-            )
-            viewModel.setBroadcastMessage(
-                savedInstanceState.getString(BROADCAST_KEY).toString()
-            )
+        super.onRestoreInstanceState(savedInstanceState)
+        savedInstanceState.getString(CONTENT_PROVIDER_KEY)?.let {
+            viewModel.setSecretKeyMessage(it)
         }
+        viewModel.setBroadcastMessage(
+            savedInstanceState.getString(BROADCAST_KEY).toString()
+        )
     }
 
     override fun onDestroy() {

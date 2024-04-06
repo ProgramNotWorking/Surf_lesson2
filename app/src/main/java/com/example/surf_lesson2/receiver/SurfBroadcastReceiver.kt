@@ -6,22 +6,14 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 
-class SurfBroadcastReceiver : BroadcastReceiver() {
-
-    private var message: String? = null
+// Класс для получения сообщения из Broadcast
+class SurfBroadcastReceiver(val saveOperation: (String) -> Unit) : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == "ru.shalkoff.vsu_lesson2_2024.SURF_ACTION") {
-            message = intent.getStringExtra("message")
-            Toast.makeText(
-                context, message, Toast.LENGTH_LONG
-            ).show()
-            Log.d("broadcast", message ?: "Nothing")
+            val message = intent.getStringExtra("message")
+            message?.let { saveOperation(it) }
         }
-    }
-
-    fun getMessage(): String? {
-        return message
     }
 
 }
