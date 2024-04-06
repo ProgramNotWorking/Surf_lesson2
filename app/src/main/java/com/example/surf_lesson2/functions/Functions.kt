@@ -7,7 +7,7 @@ import android.net.Uri
 // Функция для получения сообщения из Content Provider
 @SuppressLint("Range")
 fun receiveDataFromSecretKeyContentProvider(
-    resolver: ContentResolver
+    resolver: ContentResolver, operation: (String?) -> Unit
 ): String? {
     val uri = Uri.parse("content://dev.surf.android.provider/text")
     val cursor = resolver.query(
@@ -27,5 +27,6 @@ fun receiveDataFromSecretKeyContentProvider(
     }
     cursor?.close()
 
+    operation(text)
     return text
 }

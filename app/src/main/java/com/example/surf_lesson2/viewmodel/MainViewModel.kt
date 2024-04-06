@@ -9,7 +9,7 @@ class MainViewModel : ViewModel() {
 
     fun getSecretKeyMessage(): String = contentProviderMessage ?: "Nothing"
 
-    fun setSecretKeyMessage(value: String) {
+    fun setSecretKeyMessage(value: String?) {
         contentProviderMessage = value
     }
 

@@ -44,12 +44,12 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = MainViewModel()
 
-        val receivedSecretKeyFromContentProvider = receiveDataFromSecretKeyContentProvider(
-            contentResolver
-        )
+        receiveDataFromSecretKeyContentProvider(contentResolver) {
+            viewModel.setSecretKeyMessage(it)
+        }
 
-        surfBroadcastReceiver = SurfBroadcastReceiver { value ->
-            viewModel.setBroadcastMessage(value)
+        surfBroadcastReceiver = SurfBroadcastReceiver {
+            viewModel.setBroadcastMessage(it)
         }
 
         val filter = IntentFilter("ru.shalkoff.vsu_lesson2_2024.SURF_ACTION")
@@ -59,9 +59,6 @@ class MainActivity : AppCompatActivity() {
 
             // Кнопка для отображения сообщения из Content Provider
             receiveSecretKeyButton.setOnClickListener {
-                receivedSecretKeyFromContentProvider?.let {
-                    viewModel.setSecretKeyMessage(it)
-                }
                 Toast.makeText(
                     this@MainActivity,
                     viewModel.getSecretKeyMessage(),
