@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.Surf_lesson2" parent="Theme.AppCompat">
+        <item name="colorPrimary">#424242</item>
+        <item name="colorAccent">#616161</item>
+        <item name="android:windowBackground">#303030</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#BDBDBD</item>
+
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">true</item>
+    </style>
+
+    <style name="Theme.Surf_lesson2" parent="Base.Theme.Surf_lesson2" />
+</resources>
